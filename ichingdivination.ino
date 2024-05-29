@@ -388,11 +388,6 @@ void loop() {
     }
     Serial.println("Printed yingyang lines");
 
-
-
-
-
-
     Descriptions descriptions = findMatches(tossResult);
 
     // Debugging output to check descriptions
@@ -407,6 +402,8 @@ void loop() {
     } else {
       Serial.println("Simplified Array: " + descriptions.simplifiedDescription + ", changing to: " + descriptions.changedDescription);
     }
+    Serial.println("Printed description lines");
+    esc.feed(1);
 
     // print url qr code
     String url = constructUrl(tossResult, descriptions.simplifiedDescription);
@@ -415,11 +412,7 @@ void loop() {
     esc.align(ALIGN_CENTER);
     esc.println("More info here:");
     esc.codeQR(url, 6);
-
-
-    Serial.println("Printed description lines");
     esc.feed(2);
-
 
     delay(3000);                // Wait for 3 seconds to debounce the button
     digitalWrite(ledPin, LOW);  // Turn off LED
