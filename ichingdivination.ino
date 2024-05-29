@@ -19,6 +19,90 @@ struct Hexagrams {
   String changedHexagram;
 };
 
+const String shortDescriptions[] = {
+  "Force",
+  "The Flow",
+  "Beginning",
+  "Recklessness",
+  "Waiting",
+  "Conflict",
+  "Leadership",
+  "Union",
+  "Restraint",
+  "Respect",
+  "Peace",
+  "Stagnation",
+  "Fellowship",
+  "Posperity",
+  "Modesty",
+  "Enthusiasm",
+  "Pursuit",
+  "Decay",
+  "Ascention",
+  "Contemplation",
+  "Chomping",  // Biting through
+  "Grace",
+  "Splitting",
+  "Revival",        // retrurning? rebirth?
+  "Innocence",      //Serendipity
+  "Dominance",      //Authority?
+  "Consumption",    //Absorption?
+  "Imbalance",      // instability
+  "Vulnerability",  //Peril? The Abyss?
+  "Adherence",      // Clinging? Radiance?
+  "Influence",      // Persuasion
+  "Stability",      // Endurance, Persevering?
+  "Withdrawal",     //Retreat
+  "Great Power",
+  "Progress",  //Clarity
+  "Eclipse",   // Obscurity
+  "Family",    // Alliance
+  "Opposition",
+  "Obstacles",       //Obstruction
+  "Deliverance",     //Salvation
+  "Decline",         //Damage,
+  "Augmentation",    //Increase
+  "Transformation",  //Breakthrough
+  "Temptation",      // Reversal?
+  "Accumulation",    //Gathering,
+  "Effort",          // Pushing Against
+  "Oppression",      // Exhaustion, Confinement
+  "Fertility",       //Abundance?
+  "Revolution",
+  "Nourishment",         //Hospitality
+  "Shock",               //Intimidation?
+  "Tranquility",         //Stillness?, Serenity?
+  "Development",         //Advancement?
+  "Compliance",          //Conformity
+  "Luxury",              //Fullness
+  "Transition",          //Travels, Exile?
+  "Clarity",             //Penetration? Like th sun?
+  "Joy",                 //Happiness
+  "Evaporation",         //Dissolution, Vanishing
+  "Limitation",          //Restraint
+  "Authenticity",        //Sincerity, Genuineness?
+  "Prudence",            // Cautiousness? Vigilance
+  "Culmination",         //Conclusion, Climax
+  "Unfinished Business"  // Incompleteness
+};
+
+const String longDescriptions[] = {
+  "Forceful beginning", "Resolves differences", "Great possession", "Powerful presence", "Humble success", "Conflict resolution", "Nourishing development", "Effortless flow",
+  "Keeping still", "Joyful expansion", "Peaceful tranquility", "Expansion of spirit", "Completion of cycles", "Self-imposed limits", "Loyal adherence", "Approaching opportunity",
+  "Dissolving problems", "Gaining benefits", "Taming power", "Excess abundance", "Doubt and caution", "Crossing great waters", "Elegant simplicity", "Brightness returning",
+  "Collective power", "Return of energy", "Contemplative reflection", "Steadfast determination", "Sustaining energy", "Initial difficulty", "Change and adaptation", "Youngest daughter",
+  "Clinging fire", "Wandering spirit", "Prevailing strength", "Retreat for renewal", "Gentle influence", "Joyful clarity", "Radiance and warmth", "Exhaustion and renewal", "Union of forces", "Great breakthrough",
+  "Spreading influence", "Penetrating insight", "Limiting influence", "Youthful folly", "Energetic vitality", "Mounting success", "Dispersing doubts", "Disciplinary action", "Bold daring", "Manifesting desires",
+  "Tension and release", "Looking within", "Protective shield", "Guiding force", "Action and movement", "Inner strength", "Cultivated field", "Strong foundation", "Peaceful harmony", "Surging ahead", "Adorning beauty", "Watchful awareness"
+};
+
+struct Descriptions {
+  String shortSimplified;
+  String longSimplified;
+  String shortChanged;
+  String longChanged;
+};
+
 
 void setup() {
   // initialize the pushbutton pin as an input:
@@ -147,7 +231,7 @@ Hexagrams findMatches(int arr[]) {
   };
 
   const String matchHexagrams[] = {
-       "1",
+    "1",
     "2",
     "3",
     "4",
@@ -305,7 +389,19 @@ Hexagrams findMatches(int arr[]) {
   return { simplifiedHexagram, changedHexagram };
 }
 
+Descriptions getDescriptions(String simplifiedHexagram, String changedHexagram) {
+  int simplifiedIndex = simplifiedHexagram.toInt() - 1;
+  int changedIndex = changedHexagram.toInt() - 1;
 
+  Descriptions descriptions = {
+    shortDescriptions[simplifiedIndex],
+    longDescriptions[simplifiedIndex],
+    shortDescriptions[changedIndex],
+    longDescriptions[changedIndex]
+  };
+
+  return descriptions;
+}
 
 bool buttonPressed = false;
 unsigned long lastButtonPressTime = 0;
@@ -396,11 +492,20 @@ void loop() {
     Serial.print("an hexagrams.changedHexagram value is: ");
     Serial.println(hexagrams.changedHexagram);
 
+    // Get descriptions
+    Descriptions descriptions = getDescriptions(hexagrams.simplifiedHexagram, hexagrams.changedHexagram);
     // Print descriptions
     if (hexagrams.changedHexagram == hexagrams.simplifiedHexagram) {
-      Serial.println("Simplified Array: " + hexagrams.simplifiedHexagram);
+      Serial.println("Short hexagram description: " + descriptions.shortSimplified);
+      esc.align(ALIGN_CENTER);
+      esc.println("Experience " + descriptions.shortSimplified);
+      // Serial.println("Long hexagram description:  " + descriptions.longSimplified);
     } else {
-      Serial.println("Simplified Array: " + hexagrams.simplifiedHexagram + ", changing to: " + hexagrams.changedHexagram);
+      Serial.println(descriptions.shortSimplified + " changes into " + descriptions.shortChanged);
+      // Serial.println("long hexagram description: " + descriptions.longSimplified);
+      // Serial.println("Long changed description:  " + descriptions.longChanged);
+      esc.align(ALIGN_CENTER);
+      esc.println(descriptions.shortSimplified + " changes into " + descriptions.shortChanged);
     }
     Serial.println("Printed description lines");
     esc.feed(1);
