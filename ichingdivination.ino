@@ -25,8 +25,8 @@ void setup() {
     ;  // wait for serial port to connect.
 
   // You can change service, characteristic UUID for a compatible esc BLE printer
-  char *service = "000018F0-0000-1000-8000-00805F9B34FB";
-  char *characteristic = "00002AF1-0000-1000-8000-00805F9B34FB";
+  char* service = "000018F0-0000-1000-8000-00805F9B34FB";
+  char* characteristic = "00002AF1-0000-1000-8000-00805F9B34FB";
   esc = EscPos(service, characteristic);
   esc.start();
 
@@ -49,24 +49,7 @@ void printYingYang(int yarr) {
   }
 }
 
-String findMatch(int arr[]) {
-  int simplifiedArray[6];
-  int changedArray[6];
-
-  // Preprocess the input array according to the rules provided
-  for (int i = 0; i < 6; i++) {
-    if (inputArray[i] == 6) {
-      simplifiedArray[i] = 8;
-      changedArray[i] = 8;  // Change 6 to 8 in changedArray
-    } else if (inputArray[i] == 9) {
-      simplifiedArray[i] = 7;
-      changedArray[i] = 9;  // Change 9 to 7 in changedArray
-    } else {
-      simplifiedArray[i] = inputArray[i];
-      changedArray[i] = inputArray[i];
-    }
-  }
-
+String* findMatches(int arr[]) {
 
   // Define arrays to store match arrays and their corresponding descriptions
   const int allArrays[][6] = {
@@ -136,8 +119,7 @@ String findMatch(int arr[]) {
     { 8, 8, 8, 8, 8, 8 }
   };
 
-
-  const String descriptions[] = {
+  const String matchDescriptions[] = {
     "1",
     "43",
     "14",
@@ -204,29 +186,121 @@ String findMatch(int arr[]) {
     "2"
   };
 
-  // Get the length of the arrays
-  int numArrays = sizeof(matchArrays) / sizeof(matchArrays[0]);
+  static String descriptions[2];  // Array to store descriptions
 
-  // Compare the given array with each match array
-  for (int i = 0; i < numArrays; i++) {
-    bool match = true;
-    for (int j = 0; j < 6; j++) {
-      // Compare each element of the given array with corresponding elements in the match array
-      if (arr[j] != matchArrays[i][j]) {
-        match = false;
-        break;  // Exit loop early if there is a mismatch
-      }
-    }
+  bool foundSimplified = false;
+  bool foundChanged = false;
 
-    // If a match is found, return the corresponding description
-    if (match) {
-      return descriptions[i];
+
+  // Check if the array contains any 6 or 9
+  bool contains6or9 = false;
+  for (int i = 0; i < 6; i++) {
+    if (arr[i] == 6 || arr[i] == 9) {
+      contains6or9 = true;
+      break;
     }
   }
 
-  // If no match is found, return an empty string or some default value
-  return "";
+  // debug
+
+  Serial.print("Input array is: ");
+  for (int i = 0; i < 6; i++) {
+    Serial.print(arr[i]);
+    Serial.print(" ");
+  }
+  Serial.println();
+
+  // end debug
+
+  // Get the length of the arrays
+  int numArrays = sizeof(allArrays) / sizeof(allArrays[0]);
+
+  // Preprocess the input array according to the rules provided
+  int simplifiedArray[6];
+  int changedArray[6] = { 0 };  // Initialize to empty array
+
+  for (int i = 0; i < 6; i++) {
+    if (arr[i] == 6) {
+      simplifiedArray[i] = 8;
+      changedArray[i] = 7;
+    } else if (arr[i] == 9) {
+      simplifiedArray[i] = 7;
+      changedArray[i] = 8;
+    } else {
+      simplifiedArray[i] = arr[i];
+      changedArray[i] = arr[i];
+    }
+  }
+
+
+  // debug
+
+  // Serial.print("After processing simplified is: ");
+  // for (int i = 0; i < 6; i++) {
+  //   Serial.print(simplifiedArray[i]);
+  //   Serial.print(" ");  // Separate elements with a space
+  // }
+  // Serial.println();  // Print a newline after all elements are printed
+
+  // Serial.print("After processing changed is: ");
+  // for (int i = 0; i < 6; i++) {
+  //   Serial.print(changedArray[i]);
+  //   Serial.print(" ");  // Separate elements with a space
+  // }
+  // Serial.println();  // Print a newline after all elements are printed
+
+  // end debug
+
+
+
+
+  // Get the length of the arrays
+  // int numArrays = sizeof(allArrays) / sizeof(allArrays[0]);
+
+  // Compare the given array with each match array
+  for (int i = 0; i < numArrays; i++) {
+    bool simplifiedMatch = true;
+    bool changedMatch = true;
+
+    // Check for a match with the simplified array
+    for (int j = 0; j < 6; j++) {
+      if (simplifiedArray[j] != allArrays[i][j]) {
+        simplifiedMatch = false;
+        break;
+      }
+    }
+
+    // If a match is found for simplifiedArray, store its description
+    if (simplifiedMatch && !foundSimplified) {
+      descriptions[0] = matchDescriptions[i];
+      foundSimplified = true;
+    }
+
+    // Check if simplifiedArray is not the same as changedArray before comparing
+    if (!foundChanged && !simplifiedMatch && !std::equal(simplifiedArray, simplifiedArray + 6, changedArray)) {
+      // Check for a match with the changed array only if simplifiedMatch is true
+      for (int j = 0; j < 6; j++) {
+        if (changedArray[j] != allArrays[i][j]) {
+          changedMatch = false;
+          break;
+        }
+      }
+
+      // If a match is found for changedArray and simplifiedArray, store its description
+      if (changedMatch && foundSimplified && !foundChanged) {
+        descriptions[1] = matchDescriptions[i];
+        foundChanged = true;
+        // Break loop if both descriptions are found
+        break;
+      }
+    }
+  }
+
+
+  // Return the array of descriptions
+  return descriptions;
 }
+
 
 
 bool buttonPressed = false;
@@ -293,17 +367,49 @@ void loop() {
       end--;
     }
 
-    Serial.println("The correct array sequence is " + int(tossResult));
+    // debug
+
+    Serial.print("The correct array sequence is: ");
+    for (int i = 0; i < 6; i++) {
+      Serial.print(tossResult[i]);
+      Serial.print(" ");  // Separate elements with a space
+    }
+    Serial.println();  // Print a newline after all elements are printed
+                       // end debug
 
     // Printing the reversed array
     //esc.println("The array after reversing it:");
     for (int i = 0; i < length; i++) {
       printYingYang(tossResult[i]);
     }
-
-
-
     Serial.println("Printed yingyang lines");
+
+
+
+
+
+
+    String* descriptionsArray = findMatches(tossResult);
+
+    // Retrieve the descriptions for simplifiedArray and changedArray
+    String simplifiedDescription = descriptionsArray[0];
+    String changedDescription = descriptionsArray[1];
+
+    // Check if changedArray is empty
+    if (changedDescription.isEmpty()) {
+      // Print only simplifiedArray
+      Serial.println("Simplified Array: " + simplifiedDescription);
+    } else {
+      // Print both simplifiedArray and changedArray
+      Serial.println("Simplified Array: " + simplifiedDescription + ", changing to: " + changedDescription);
+    }
+
+
+
+
+
+
+    Serial.println("Printed description lines");
     esc.feed(2);
 
 
