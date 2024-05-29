@@ -38,14 +38,21 @@ void setup() {
 void printYingYang(int yarr) {
   Serial.println("Printing line corresponding to " + String(yarr));
   esc.align(ALIGN_CENTER);
-  if (yarr == 6) {
-    esc.println("---x---");
-  } else if (yarr == 9) {
-    esc.println("---o---");
-  } else if (yarr == 7) {
-    esc.println("-------");
-  } else if (yarr == 8) {
-    esc.println("--- ---");
+  switch (yarr) {
+    case 6:
+      esc.println("---x---");
+      break;
+    case 9:
+      esc.println("---o---");
+      break;
+    case 7:
+      esc.println("-------");
+      break;
+    case 8:
+      esc.println("--- ---");
+      break;
+    default:
+      break;
   }
 }
 
