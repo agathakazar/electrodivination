@@ -63,6 +63,19 @@ void printYingYang(int yarr) {
   }
 }
 
+String constructUrl(int tossResult[], String simplifiedDescription) {
+  // Convert tossResult array to a single string
+  String hexagram = "";
+  for (int i = 0; i < 6; i++) {
+    hexagram += String(tossResult[i]);
+  }
+
+  // Construct the URL with the hexagram and simplifiedDescription
+  String url = "http://wengu.tartarie.com/wg/wengu.php?l=Yijing&tire=" + hexagram + "&no=" + simplifiedDescription + "&lang=en";
+
+  return url;
+}
+
 Descriptions findMatches(int arr[]) {
 
   // Define arrays to store match arrays and their corresponding descriptions
@@ -395,6 +408,13 @@ void loop() {
       Serial.println("Simplified Array: " + descriptions.simplifiedDescription + ", changing to: " + descriptions.changedDescription);
     }
 
+    // print url qr code
+    String url = constructUrl(tossResult, descriptions.simplifiedDescription);
+    Serial.println("Printing constructed url:");
+    Serial.println(url);
+    esc.align(ALIGN_CENTER);
+    esc.println("More info here:");
+    esc.codeQR(url, 6);
 
 
     Serial.println("Printed description lines");
