@@ -264,29 +264,28 @@ Descriptions findMatches(int arr[]) {
 
   // Compare the given array with each match array
   for (int i = 0; i < 64; i++) {
+    bool simplifiedMatch = true;
+    bool changedMatch = true;
 
-    // Check for a match with the simplified array
     for (int j = 0; j < 6; j++) {
-      if (simplifiedArray[j] == yarrowArrays[i][j]) {
-        simplifiedDescription = matchDescriptions[i];
-        break;
+      if (simplifiedArray[j] != yarrowArrays[i][j]) {
+        simplifiedMatch = false;
       }
+      if (changedArray[j] != yarrowArrays[i][j]) {
+        changedMatch = false;
+      }
+    }
+
+    if (simplifiedMatch) {
+      simplifiedDescription = matchDescriptions[i];
+    }
+
+    if (changedMatch) {
+      changedDescription = matchDescriptions[i];
     }
   }
 
-  // Only compare with changedArray if the input array contained 6 or 9
-  if (contains6or9) {
-    for (int i = 0; i < 64; i++) {
-
-      // Check for a match with the changed array
-      for (int j = 0; j < 6; j++) {
-        if (changedArray[j] == yarrowArrays[i][j]) {
-          changedDescription = matchDescriptions[i];
-          break;
-        }
-      }
-    }
-  } else {
+  if (!contains6or9) {
     changedDescription = simplifiedDescription;
   }
 
