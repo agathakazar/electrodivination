@@ -52,7 +52,7 @@ void printYingYang(int yarr) {
 String* findMatches(int arr[]) {
 
   // Define arrays to store match arrays and their corresponding descriptions
-  const int allArrays[][6] = {
+  const int yarrowArrays[][6] = {
     { 7, 7, 7, 7, 7, 7 },
     { 7, 7, 7, 7, 7, 8 },
     { 7, 7, 7, 7, 8, 7 },
@@ -213,20 +213,27 @@ String* findMatches(int arr[]) {
   // end debug
 
   // Get the length of the arrays
-  int numArrays = sizeof(allArrays) / sizeof(allArrays[0]);
+  int numArrays = sizeof(yarrowArrays) / sizeof(yarrowArrays[0]);
 
   // Preprocess the input array according to the rules provided
   int simplifiedArray[6];
-  int changedArray[6] = { 0 };  // Initialize to empty array
+  int changedArray[6];
 
-  for (int i = 0; i < 6; i++) {
-    if (arr[i] == 6) {
-      simplifiedArray[i] = 8;
-      changedArray[i] = 7;
-    } else if (arr[i] == 9) {
-      simplifiedArray[i] = 7;
-      changedArray[i] = 8;
-    } else {
+  if (contains6or9) {
+    for (int i = 0; i < 6; i++) {
+      if (arr[i] == 6) {
+        simplifiedArray[i] = 8;
+        changedArray[i] = 7;
+      } else if (arr[i] == 9) {
+        simplifiedArray[i] = 7;
+        changedArray[i] = 8;
+      } else {
+        simplifiedArray[i] = arr[i];
+        changedArray[i] = arr[i];
+      }
+    }
+  } else {
+    for (int i = 0; i < 6; i++) {
       simplifiedArray[i] = arr[i];
       changedArray[i] = arr[i];
     }
@@ -235,27 +242,22 @@ String* findMatches(int arr[]) {
 
   // debug
 
-  // Serial.print("After processing simplified is: ");
-  // for (int i = 0; i < 6; i++) {
-  //   Serial.print(simplifiedArray[i]);
-  //   Serial.print(" ");  // Separate elements with a space
-  // }
-  // Serial.println();  // Print a newline after all elements are printed
+  Serial.print("After processing simplified is: ");
+  for (int i = 0; i < 6; i++) {
+    Serial.print(simplifiedArray[i]);
+    Serial.print(" ");  // Separate elements with a space
+  }
+  Serial.println();  // Print a newline after all elements are printed
 
-  // Serial.print("After processing changed is: ");
-  // for (int i = 0; i < 6; i++) {
-  //   Serial.print(changedArray[i]);
-  //   Serial.print(" ");  // Separate elements with a space
-  // }
-  // Serial.println();  // Print a newline after all elements are printed
+  Serial.print("After processing changed is: ");
+  for (int i = 0; i < 6; i++) {
+    Serial.print(changedArray[i]);
+    Serial.print(" ");  // Separate elements with a space
+  }
+  Serial.println();  // Print a newline after all elements are printed
 
   // end debug
 
-
-
-
-  // Get the length of the arrays
-  // int numArrays = sizeof(allArrays) / sizeof(allArrays[0]);
 
   // Compare the given array with each match array
   for (int i = 0; i < numArrays; i++) {
@@ -264,7 +266,7 @@ String* findMatches(int arr[]) {
 
     // Check for a match with the simplified array
     for (int j = 0; j < 6; j++) {
-      if (simplifiedArray[j] != allArrays[i][j]) {
+      if (simplifiedArray[j] != yarrowArrays[i][j]) {
         simplifiedMatch = false;
         break;
       }
@@ -274,28 +276,29 @@ String* findMatches(int arr[]) {
     if (simplifiedMatch && !foundSimplified) {
       descriptions[0] = matchDescriptions[i];
       foundSimplified = true;
+      Serial.print("Found simplified match: ");
+      Serial.println(descriptions[0]);
     }
 
-    // Check if simplifiedArray is not the same as changedArray before comparing
-    if (!foundChanged && !simplifiedMatch && !std::equal(simplifiedArray, simplifiedArray + 6, changedArray)) {
-      // Check for a match with the changed array only if simplifiedMatch is true
+    // Only compare with changedArray if the input array contained 6 or 9
+    if (contains6or9 && !foundChanged && !simplifiedMatch) {
+      // Check for a match with the changed array only if simplifiedMatch is false
       for (int j = 0; j < 6; j++) {
-        if (changedArray[j] != allArrays[i][j]) {
+        if (changedArray[j] != yarrowArrays[i][j]) {
           changedMatch = false;
           break;
         }
       }
 
       // If a match is found for changedArray and simplifiedArray, store its description
-      if (changedMatch && foundSimplified && !foundChanged) {
+      if (changedMatch && !foundChanged) {
         descriptions[1] = matchDescriptions[i];
         foundChanged = true;
-        // Break loop if both descriptions are found
-        break;
+        Serial.print("Found changed match: ");
+        Serial.println(descriptions[1]);
       }
     }
   }
-
 
   // Return the array of descriptions
   return descriptions;
@@ -396,7 +399,7 @@ void loop() {
     String changedDescription = descriptionsArray[1];
 
     // Check if changedArray is empty
-    if (changedDescription.isEmpty()) {
+    if (changedDescription == simplifiedDescription) {
       // Print only simplifiedArray
       Serial.println("Simplified Array: " + simplifiedDescription);
     } else {
