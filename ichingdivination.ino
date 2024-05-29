@@ -13,10 +13,10 @@ int buttonState = LOW;
 int randResult = 999;
 int tossResult[] = { 0, 0, 0, 0, 0, 0 };
 
-// Define a struct to hold descriptions
-struct Descriptions {
-  String simplifiedDescription;
-  String changedDescription;
+// Define a struct to hold hexagrams
+struct Hexagrams {
+  String simplifiedHexagram;
+  String changedHexagram;
 };
 
 
@@ -63,22 +63,22 @@ void printYingYang(int yarr) {
   }
 }
 
-String constructUrl(int tossResult[], String simplifiedDescription) {
+String constructUrl(int tossResult[], String simplifiedHexagram) {
   // Convert tossResult array to a single string
   String hexagram = "";
   for (int i = 0; i < 6; i++) {
     hexagram += String(tossResult[i]);
   }
 
-  // Construct the URL with the hexagram and simplifiedDescription
-  String url = "http://wengu.tartarie.com/wg/wengu.php?l=Yijing&tire=" + hexagram + "&no=" + simplifiedDescription + "&lang=en";
+  // Construct the URL with the hexagram and simplifiedHexagram
+  String url = "http://wengu.tartarie.com/wg/wengu.php?l=Yijing&tire=" + hexagram + "&no=" + simplifiedHexagram + "&lang=en";
 
   return url;
 }
 
-Descriptions findMatches(int arr[]) {
+Hexagrams findMatches(int arr[]) {
 
-  // Define arrays to store match arrays and their corresponding descriptions
+  // Define arrays to store match arrays and their corresponding hexagram
   const int yarrowArrays[][6] = {
     { 7, 7, 7, 7, 7, 7 },
     { 7, 7, 7, 7, 7, 8 },
@@ -146,7 +146,7 @@ Descriptions findMatches(int arr[]) {
     { 8, 8, 8, 8, 8, 8 }
   };
 
-  const String matchDescriptions[] = {
+  const String matchHexagrams[] = {
     "1",
     "43",
     "14",
@@ -214,8 +214,8 @@ Descriptions findMatches(int arr[]) {
   };
 
 
-  String simplifiedDescription;
-  String changedDescription;
+  String simplifiedHexagram;
+  String changedHexagram;
   int simplifiedArray[6];
   int changedArray[6];
 
@@ -290,19 +290,19 @@ Descriptions findMatches(int arr[]) {
     }
 
     if (simplifiedMatch) {
-      simplifiedDescription = matchDescriptions[i];
+      simplifiedHexagram = matchHexagrams[i];
     }
 
     if (changedMatch) {
-      changedDescription = matchDescriptions[i];
+      changedHexagram = matchHexagrams[i];
     }
   }
 
   if (!contains6or9) {
-    changedDescription = simplifiedDescription;
+    changedHexagram = simplifiedHexagram;
   }
 
-  return { simplifiedDescription, changedDescription };
+  return { simplifiedHexagram, changedHexagram };
 }
 
 
@@ -388,25 +388,25 @@ void loop() {
     }
     Serial.println("Printed yingyang lines");
 
-    Descriptions descriptions = findMatches(tossResult);
+    Hexagrams hexagrams = findMatches(tossResult);
 
-    // Debugging output to check descriptions
-    Serial.print("descriptions.simplifiedDescription value is: ");
-    Serial.print(descriptions.simplifiedDescription);
-    Serial.print("an descriptions.changedDescription value is: ");
-    Serial.println(descriptions.changedDescription);
+    // Debugging output to check hexagrams
+    Serial.print("hexagrams.simplifiedHexagram value is: ");
+    Serial.print(hexagrams.simplifiedHexagram);
+    Serial.print("an hexagrams.changedHexagram value is: ");
+    Serial.println(hexagrams.changedHexagram);
 
     // Print descriptions
-    if (descriptions.changedDescription == descriptions.simplifiedDescription) {
-      Serial.println("Simplified Array: " + descriptions.simplifiedDescription);
+    if (hexagrams.changedHexagram == hexagrams.simplifiedHexagram) {
+      Serial.println("Simplified Array: " + hexagrams.simplifiedHexagram);
     } else {
-      Serial.println("Simplified Array: " + descriptions.simplifiedDescription + ", changing to: " + descriptions.changedDescription);
+      Serial.println("Simplified Array: " + hexagrams.simplifiedHexagram + ", changing to: " + hexagrams.changedHexagram);
     }
     Serial.println("Printed description lines");
     esc.feed(1);
 
     // print url qr code
-    String url = constructUrl(tossResult, descriptions.simplifiedDescription);
+    String url = constructUrl(tossResult, hexagrams.simplifiedHexagram);
     Serial.println("Printing constructed url:");
     Serial.println(url);
     esc.align(ALIGN_CENTER);
