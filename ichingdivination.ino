@@ -477,11 +477,14 @@ void loop() {
     Serial.println();  // Print a newline after all elements are printed
                        // end debug
 
+    esc.feed(1);
     // Printing the reversed array
     //esc.println("The array after reversing it:");
     for (int i = 0; i < length; i++) {
       printYingYang(tossResult[i]);
     }
+    esc.feed(1);
+
     Serial.println("Printed yingyang lines");
 
     Hexagrams hexagrams = findMatches(tossResult);
@@ -505,7 +508,16 @@ void loop() {
       // Serial.println("long hexagram description: " + descriptions.longSimplified);
       // Serial.println("Long changed description:  " + descriptions.longChanged);
       esc.align(ALIGN_CENTER);
-      esc.println(descriptions.shortSimplified + " changes into " + descriptions.shortChanged);
+      esc.effectBold();
+      esc.effectDoubleWidth();
+      //esc.effectDoubleHeight();
+      esc.println(descriptions.shortSimplified);
+      esc.effectOff();
+      esc.println(" leads to ");
+      esc.effectBold();
+      esc.effectDoubleWidth();
+      esc.println(descriptions.shortChanged);
+      esc.effectOff();
     }
     Serial.println("Printed description lines");
     esc.feed(1);
@@ -517,7 +529,7 @@ void loop() {
     esc.align(ALIGN_CENTER);
     esc.println("More info here:");
     esc.codeQR(url, 6);
-    esc.feed(2);
+    esc.feed(3);
 
     delay(3000);                // Wait for 3 seconds to debounce the button
     digitalWrite(ledPin, LOW);  // Turn off LED
