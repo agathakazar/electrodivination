@@ -20,80 +20,137 @@ struct Hexagrams {
 };
 
 const String shortDescriptions[] = {
-  "Force",
-  "The Flow",
-  "Beginning",
-  "Recklessness",
-  "Waiting",
-  "Conflict",
-  "Leadership",
-  "Union",
-  "Restraint",
-  "Respect",
-  "Peace",
-  "Stagnation",
-  "Fellowship",
-  "Posperity",
-  "Modesty",
-  "Enthusiasm",
-  "Pursuit",
-  "Decay",
-  "Ascention",
-  "Contemplation",
-  "Chomping",  // Biting through
-  "Grace",
-  "Splitting",
-  "Revival",        // retrurning? rebirth?
-  "Innocence",      //Serendipity
-  "Dominance",      //Authority?
-  "Consumption",    //Absorption?
-  "Imbalance",      // instability
-  "Vulnerability",  //Peril? The Abyss?
-  "Adherence",      // Clinging? Radiance?
-  "Influence",      // Persuasion
-  "Stability",      // Endurance, Persevering?
-  "Withdrawal",     //Retreat
-  "Great Power",
-  "Progress",  //Clarity
-  "Eclipse",   // Obscurity
-  "Family",    // Alliance
-  "Opposition",
-  "Obstacles",       //Obstruction
-  "Deliverance",     //Salvation
-  "Decline",         //Damage,
-  "Augmentation",    //Increase
-  "Transformation",  //Breakthrough
-  "Temptation",      // Reversal?
-  "Accumulation",    //Gathering,
-  "Effort",          // Pushing Against
-  "Oppression",      // Exhaustion, Confinement
-  "Fertility",       //Abundance?
-  "Revolution",
-  "Nourishment",         //Hospitality
-  "Shock",               //Intimidation?
-  "Tranquility",         //Stillness?, Serenity?
-  "Development",         //Advancement?
-  "Compliance",          //Conformity
-  "Luxury",              //Fullness
-  "Transition",          //Travels, Exile?
-  "Clarity",             //Penetration? Like th sun?
-  "Joy",                 //Happiness
-  "Evaporation",         //Dissolution, Vanishing
-  "Limitation",          //Restraint
-  "Authenticity",        //Sincerity, Genuineness?
-  "Prudence",            // Cautiousness? Vigilance
-  "Culmination",         //Conclusion, Climax
-  "Unfinished Business"  // Incompleteness
+  "Force", //1
+  "Flow", //2
+  "Beginning", //3
+  "Recklessness", //4 Immaturity
+  "Waiting", //5
+  "Conflict", //6
+  "Discipline", //7 Leadership
+  "Union", //8
+  "Restraint", //9
+  "Caution", //10
+  "Harmony", //11
+  "Stagnation", //12
+  "Community", //13 Fellowship?
+  "Wealth", //14
+  "Modesty", //15
+  "Enthusiasm", //16
+  "Following", //17
+  "Repair", //18
+  "Advances", //19
+  "Contemplation", //20
+  "Reformation",  // 21 Discernment, Biting through
+  "Grace", //22
+  "Disintegration", //23 Collapse, Ruin
+  "Revival",        //24 retrurning? rebirth?
+  "Serendipity",      //25 Innocence
+  "Willpower",      //26 Authority? Dominance
+  "Consumption",    //27 Absorption?
+  "Imbalance",      //28 instability
+  "Vulnerability",  //29 Danger? Peril?
+  "Clarity",      //30 Clinging? Radiance? 
+  "Initiative",      //31 Persuasion, Influence
+  "Consistency",      //32 Endurance, Persevering? Stability?
+  "Withdrawal",     //33 Retreat
+  "Power", //34 Great Power
+  "Progress",  //35 
+  "Ignorance",   //36 Obscurity
+  "Companions",    //37 Confidants, 
+  "Opposition", //38
+  "Obstacles",       //39 Obstruction
+  "Liberation",     //40 Salvation
+  "Loss",         //41 Damage, Decline
+  "Gain",    //42 Increase
+  "Transformation",  //43 Breakthrough
+  "Temptation",      //44 Reversal?
+  "Contraction",    //45 Gathering
+  "Ascension",          //46 Pushing Against
+  "Oppression",      //47 Exhaustion, Confinement
+  "The Source",       //48 The well, 
+  "Metamorphosis",      //49
+  "Rejuvenation",         // 50 
+  "Shock",               // 51 Intimidation?
+  "Stillness",         // 52 , Serenity?
+  "Development",         // 53 Advancement?
+  "Compliance",          // 54 Conformity
+  "Abundance",              // 55 Fullness
+  "Transition",          // 56 Travels, Exile?
+  "Penetration",             // 57 Penetration? Like th sun?
+  "Joy",                 // 58 Happiness
+  "Expansion",         // 59 Dissolution, Vanishing, Evaporation
+  "Limitation",          // 60 Restraint
+  "Authenticity",        // 61 Sincerity, Genuineness?
+  "Vigilance",            // 62 Cautiousness? Vigilance, Prudence
+  "Completion",         // 63 Conclusion, Climax
+  "Incompleteness"  // 64 Incompleteness, Unfinished Business
 };
 
 const String longDescriptions[] = {
-  "Forceful beginning", "Resolves differences", "Great possession", "Powerful presence", "Humble success", "Conflict resolution", "Nourishing development", "Effortless flow",
-  "Keeping still", "Joyful expansion", "Peaceful tranquility", "Expansion of spirit", "Completion of cycles", "Self-imposed limits", "Loyal adherence", "Approaching opportunity",
-  "Dissolving problems", "Gaining benefits", "Taming power", "Excess abundance", "Doubt and caution", "Crossing great waters", "Elegant simplicity", "Brightness returning",
-  "Collective power", "Return of energy", "Contemplative reflection", "Steadfast determination", "Sustaining energy", "Initial difficulty", "Change and adaptation", "Youngest daughter",
-  "Clinging fire", "Wandering spirit", "Prevailing strength", "Retreat for renewal", "Gentle influence", "Joyful clarity", "Radiance and warmth", "Exhaustion and renewal", "Union of forces", "Great breakthrough",
-  "Spreading influence", "Penetrating insight", "Limiting influence", "Youthful folly", "Energetic vitality", "Mounting success", "Dispersing doubts", "Disciplinary action", "Bold daring", "Manifesting desires",
-  "Tension and release", "Looking within", "Protective shield", "Guiding force", "Action and movement", "Inner strength", "Cultivated field", "Strong foundation", "Peaceful harmony", "Surging ahead", "Adorning beauty", "Watchful awareness"
+  "Creative Forces", //1
+  "Natural Flow", //2
+  "Difficult Beginnings", //3
+  "Acquiring Experience", //4
+  "Calculated Inaction", //5
+  "Stress and Tention", //6
+  "Group Action", //7
+  "Coordination and Unity", //8
+  "Minor Obstruction", //9
+  "Proceeding Cautiously", //10
+  "Peace and Harmony", //11
+  "Standstill and Decadence", //12
+  "Companionship With People", //13
+  "Possession in Great Measure", //14
+  "Temperance and Moderation", //15
+  "Enthusiastic Self-confidence", //16
+  "Following and Being Followed", //17
+  "Work On What Has Been Spoiled", //18
+  "Progressive Advances", //19
+  "Observation and Introspection", //20
+  "Figuring It Out", //21
+  "Elegance and Vanity", //22
+  "Collapse and Ruin", //23
+  "Cyclic Repetition", //24
+  "Freedom from Error", //25
+  "Energy Under Control", //26
+  "Appropriate Nourishment", //27
+  "Great Excess", //28
+  "Perilous Abyss", //29
+  "Radiance of Comprehension", //30
+  "Influence of Stimulation", //31
+  "Constancy in the Midst of Change", //32
+  "Retreat and Disassociation", //33
+  "Great Power", //34
+  "Advance of Consciousness", //35
+  "Clouded Perception", //36
+  "Kinship", //37
+  "Mutual Alienation", //38
+  "Impasse", //39
+  "Release of Tension", //40
+  "Compensating Sacrifice", //41
+  "Augmentation", //42
+  "Breakthrough", //43
+  "Passing Temptation", //44
+  "Gathering Together", //45
+  "Rising and Advancing", //46
+  "Tiresome Restriction", //47
+  "Access to the Source", //48
+  "Radical Change", //49
+  "Reconstruction", //50
+  "Sudden Change", //51
+  "Keeping Stillness", //52
+  "Gradual Progress", //53
+  "Conformity and Propriety", //54
+  "Luxuriant Fullness ", //55
+  "Wandering and Travel", //56
+  "Penetrating Winds", //57
+  "Self-indulgence", //58
+  "Catharsis", //59
+  "Restrictive Regulations", //60
+  "Inner Truth", //61
+  "Things Small", //62
+  "A state of Climax", //63
+  "Unfinished Business" //64
 };
 
 struct Descriptions {
@@ -501,10 +558,10 @@ void loop() {
     if (hexagrams.changedHexagram == hexagrams.simplifiedHexagram) {
       Serial.println("Short hexagram description: " + descriptions.shortSimplified);
       esc.align(ALIGN_CENTER);
-      esc.println("Experience " + descriptions.shortSimplified);
+      esc.println("Experience " + descriptions.longSimplified); //Single hexagrams use a different usually longer text
       // Serial.println("Long hexagram description:  " + descriptions.longSimplified);
     } else {
-      Serial.println(descriptions.shortSimplified + " changes into " + descriptions.shortChanged);
+      Serial.println(descriptions.shortSimplified + " transforming into " + descriptions.shortChanged);
       // Serial.println("long hexagram description: " + descriptions.longSimplified);
       // Serial.println("Long changed description:  " + descriptions.longChanged);
       esc.align(ALIGN_CENTER);
@@ -513,7 +570,7 @@ void loop() {
       //esc.effectDoubleHeight();
       esc.println(descriptions.shortSimplified);
       esc.effectOff();
-      esc.println(" leads to ");
+      esc.println(" may lead to ");
       esc.effectBold();
       esc.effectDoubleWidth();
       esc.println(descriptions.shortChanged);
