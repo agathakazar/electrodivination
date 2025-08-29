@@ -556,7 +556,7 @@ void loop() {
     Descriptions descriptions = getDescriptions(hexagrams.simplifiedHexagram, hexagrams.changedHexagram);
     // Print descriptions
     if (hexagrams.changedHexagram == hexagrams.simplifiedHexagram) {
-      Serial.println("Short hexagram description: " + descriptions.shortSimplified);
+      Serial.println("Short hexagram description: " + descriptions.longSimplified);
       esc.align(ALIGN_CENTER);
       esc.println("Experience " + descriptions.longSimplified); //Single hexagrams use a different usually longer text
       // Serial.println("Long hexagram description:  " + descriptions.longSimplified);
