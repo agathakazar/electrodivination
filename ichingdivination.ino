@@ -1,5 +1,7 @@
-#include "escprinterble.h"
+#include "escprinterble.h" //
 #include "BLEDevice.h"
+
+#include "EspEasyServo.h" // https://github.com/tanakamasayuki/EspEasyUtils
 
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
 #error Bluetooth is not enabled! or your board doesn't have one
@@ -12,6 +14,10 @@ const int ledPin = 25;
 int buttonState = LOW;
 int randResult = 999;
 int tossResult[] = { 0, 0, 0, 0, 0, 0 };
+
+// Servo initialize
+EspEasyServo servo(LEDC_CHANNEL_0, GPIO_NUM_13);
+
 
 // Define a struct to hold hexagrams
 struct Hexagrams {
@@ -166,7 +172,6 @@ void setup() {
   pinMode(ledPin, OUTPUT);
   pinMode(buttonPin, INPUT_PULLUP);
 
-
   Serial.begin(115200);
 
   while (!Serial)
@@ -181,6 +186,8 @@ void setup() {
   if (esc.connect()) {
     Serial.println("Connected.");
   }
+
+
 }
 
 void printYingYang(int yarr) {
@@ -586,9 +593,17 @@ void loop() {
     esc.align(ALIGN_CENTER);
     esc.println("More info here:");
     esc.codeQR(url, 6);
-    esc.feed(3);
+    esc.feed(7);
 
     delay(3000);                // Wait for 3 seconds to debounce the button
     digitalWrite(ledPin, LOW);  // Turn off LED
+
+
+
+    //cutcutcut
+    servo.setServo(80);
+    delay(1000);
+    //return cutter
+    servo.setServo(0);
   }
 }
