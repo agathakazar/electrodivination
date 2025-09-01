@@ -7,3 +7,4 @@ http://www2.unipr.it/~deyoung/I_Ching_Wilhelm_Translation.html
 https://archive.org/details/ichingnewinterpr00reifrich/  
 https://www.russellcottrell.com/VirtualYarrowStalks/rules.htm  
 https://akirarabelais.com/o/thelibraryofbabel/i.html  
+
