@@ -1,4 +1,4 @@
-#include "escprinterble.h" //
+#include "escprinterble.h" // https://github.com/rnrobles/esc-thermal-printer-ble
 #include "BLEDevice.h"
 
 #include "EspEasyServo.h" // https://github.com/tanakamasayuki/EspEasyUtils
