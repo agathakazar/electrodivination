@@ -187,7 +187,8 @@ void setup() {
     Serial.println("Connected.");
   }
 
-
+  //servo closer to paper
+    servo.setServo(45);
 }
 
 void printYingYang(int yarr) {
@@ -598,12 +599,10 @@ void loop() {
     delay(3000);                // Wait for 3 seconds to debounce the button
     digitalWrite(ledPin, LOW);  // Turn off LED
 
-
-
     //cutcutcut
-    servo.setServo(80);
+    servo.setServo(140);
     delay(1000);
     //return cutter
-    servo.setServo(0);
+    servo.setServo(45);
   }
 }
