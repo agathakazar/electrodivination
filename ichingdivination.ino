@@ -566,7 +566,8 @@ void loop() {
     if (hexagrams.changedHexagram == hexagrams.simplifiedHexagram) {
       Serial.println("Short hexagram description: " + descriptions.longSimplified);
       esc.align(ALIGN_CENTER);
-      esc.println("Experience " + descriptions.longSimplified); //Single hexagrams use a different usually longer text
+      esc.println("Experience");
+      esc.println (descriptions.longSimplified); //Stable hexagrams use a longer text, so two lines (36 symbols max per line)
       // Serial.println("Long hexagram description:  " + descriptions.longSimplified);
     } else {
       Serial.println(descriptions.shortSimplified + " transforming into " + descriptions.shortChanged);
