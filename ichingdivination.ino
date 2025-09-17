@@ -16,7 +16,7 @@ const uint8_t CS_PIN = 5;    // CS
 const uint8_t CLK_PIN = 18;   // CLK
 const uint64_t CUSTOM_BITMAP = 0x5555aaaa5555aaaa;
 
-Max7219Animation animation(DATA_PIN, CLK_PIN, CS_PIN);
+Max7219Animation display(DATA_PIN, CLK_PIN, CS_PIN);
 
 //capasensor stuff
 const int left1 = 32;
@@ -194,8 +194,10 @@ void setup() {
   Serial.begin(115200);
   delay(500);
 
+
   // let's get led matrix
-  animation.begin();
+  display.begin(Max7219Animation::IDLE, 200);  // Start in IDLE with 200ms frame delay (slower for idle)
+  display.startTask();
 
   capleft.begin();
   Serial.println(capleft.getBaseline(), 1);
@@ -546,7 +548,8 @@ if (handDetectedRight && handDetectedLeft) {
     //delay(500);
     handDetected = true;
       if (esc.connect()){
-        animation.updateProcessingAnimation(100);
+        display.setMode(Max7219Animation::PROCESSING);
+        display.setFrameDelay(100);
       lastButtonPressTime = millis();
       while (tossItera < 6) {
         randResult = random(15);
@@ -566,13 +569,13 @@ if (handDetectedRight && handDetectedLeft) {
       }
     }
 } else if (handDetectedRight) {
-    animation.showRightArrow();
+    display.showRightArrow();
     handDetected = false;
 } else if (handDetectedLeft) {
-    animation.showLeftArrow();
+    display.showLeftArrow();
     handDetected = false;
 } else {
-    animation.updateIdleAnimation(100);
+    display.setMode(Max7219Animation::IDLE, 200);
     handDetected = false;
 }
 
