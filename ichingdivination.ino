@@ -19,10 +19,10 @@ const uint64_t CUSTOM_BITMAP = 0x5555aaaa5555aaaa;
 Max7219Animation animation(DATA_PIN, CLK_PIN, CS_PIN);
 
 //capasensor stuff
-const int left1 = 12;
-const int left2 = 14;
-const int right1 = 32;
-const int right2 = 33;
+const int left1 = 32;
+const int left2 = 33;
+const int right1 = 12;
+const int right2 = 14;
 const float handThreshold = 20.0;
 const int debounceCount = 3;
 const int debounceDelay = 50;
@@ -516,9 +516,17 @@ void loop() {
   static int detectionCounter = 0;
   bool handDetected = false;
 
+  animation.updateIdleAnimation(100);
   
+  if (capright.isHandDetected(handThreshold)){
+    
+    animation.showRightArrow();
+  } else if (capleft.isHandDetected(handThreshold)){
+    animation.showLeftArrow();
+  } else if (capleft.isHandDetected(handThreshold) && capright.isHandDetected(handThreshold)){
+    animation.showTwoArrows();
+  }
 
-  
 
    if (capleft.isHandDetected(handThreshold) && capright.isHandDetected(handThreshold) && esc.connect()) {
     detectionCounter++;
