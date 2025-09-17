@@ -32,7 +32,7 @@ public:
   
   void begin() {
     mx.begin();
-    mx.control(MD_MAX72XX::INTENSITY, 3);  // Set brightness (0-15)
+    mx.control(MD_MAX72XX::INTENSITY, 8);  // Set brightness (0-15)
     mx.clear();
     displayFrame(PROCESSING_IMAGES[0]);  // Display first processing frame on startup
   }
@@ -55,39 +55,36 @@ public:
     }
   }
 
-  void showTwoArrows() {
-    displayFrame(TWO_ARROWS);
+  void stopAnimation() {
+    mx.clear();  // Clear the display
     processingFrame = 0;  // Reset processing animation
     idleFrame = 0;  // Reset idle animation
     lastFrameTime = millis();  // Reset timing
+  }
+
+  void showTwoArrows() {
+    stopAnimation();  // Clear and reset before displaying
+    displayFrame(TWO_ARROWS);
   }
 
   void showArrowDown() {
+    stopAnimation();  // Clear and reset before displaying
     displayFrame(ARROW_DOWN);
-    processingFrame = 0;  // Reset processing animation
-    idleFrame = 0;  // Reset idle animation
-    lastFrameTime = millis();  // Reset timing
   }
 
   void showLeftArrow() {
+    stopAnimation();  // Clear and reset before displaying
     displayFrame(LEFT_ARROW);
-    processingFrame = 0;  // Reset processing animation
-    idleFrame = 0;  // Reset idle animation
-    lastFrameTime = millis();  // Reset timing
   }
 
   void showRightArrow() {
+    stopAnimation();  // Clear and reset before displaying
     displayFrame(RIGHT_ARROW);
-    processingFrame = 0;  // Reset processing animation
-    idleFrame = 0;  // Reset idle animation
-    lastFrameTime = millis();  // Reset timing
   }
 
   void showCustomBitmap(uint64_t bitmap) {
+    stopAnimation();  // Clear and reset before displaying
     displayFrame(bitmap);
-    processingFrame = 0;  // Reset processing animation
-    idleFrame = 0;  // Reset idle animation
-    lastFrameTime = millis();  // Reset timing
   }
 
 private:

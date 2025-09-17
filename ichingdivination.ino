@@ -513,31 +513,31 @@ void loop() {
     }
   }
 
-  static int detectionCounter = 0;
+  static int detectionCounterLeft = 0;
+  static int detectionCounterRight = 0;
+  bool handDetectedLeft = false;
+  bool handDetectedRight = false;
   bool handDetected = false;
 
-  animation.updateIdleAnimation(100);
+  int tossItera = 0;
+
   
   if (capright.isHandDetected(handThreshold)){
-    
-    animation.showRightArrow();
-  } else if (capleft.isHandDetected(handThreshold)){
-    animation.showLeftArrow();
-  } else if (capleft.isHandDetected(handThreshold) && capright.isHandDetected(handThreshold)){
+    detectionCounterRight++;
+    if (detectionCounterRight >= debounceCount) {
+      handDetectedRight = true;
+      animation.showRightArrow();
+    }
+  } if (capleft.isHandDetected(handThreshold)){
+    detectionCounterLeft++;
+    if (detectionCounterLeft >= debounceCount) {
+      handDetectedLeft = true;
+      animation.showLeftArrow(); }
+  } if (handDetectedRight && handDetectedLeft){
     animation.showTwoArrows();
-  }
-
-
-   if (capleft.isHandDetected(handThreshold) && capright.isHandDetected(handThreshold) && esc.connect()) {
-    detectionCounter++;
-    if (detectionCounter >= debounceCount) {
-      handDetected = true;
+    handDetected = true;
+    if (esc.connect()){
       lastButtonPressTime = millis();
-
-      // digitalWrite(ledPin, HIGH);  // Turn on LED if button is pressed (connected to ground)
-
-      int tossItera = 0;
-
       while (tossItera < 6) {
         randResult = random(15);
         Serial.println("Got random number " + String(randResult));
@@ -555,10 +555,12 @@ void loop() {
         tossItera++;
       }
     }
-  } else {
-    detectionCounter = 0; //remove this later? 
+    else {
+      handDetected = false;
+    }
   }
-
+   else 
+  animation.updateIdleAnimation(100);
 
   if (handDetected) {
     handDetected = false;
