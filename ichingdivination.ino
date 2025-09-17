@@ -1,6 +1,6 @@
 #include "escprinterble.h" // https://github.com/rnrobles/esc-thermal-printer-ble
 #include "BLEDevice.h"
-#include "EspEasyServo.h" // https://github.com/tanakamasayuki/EspEasyUtils
+#include "EspEasyServoEx.h" // https://github.com/tanakamasayuki/EspEasyUtils
 #include <EspCapaSens.h>
 #include "Max7219Animation.h"
 
@@ -37,7 +37,7 @@ int randResult = 999;
 int tossResult[] = { 0, 0, 0, 0, 0, 0 };
 
 // Servo initialize
-EspEasyServo servo(LEDC_CHANNEL_0, GPIO_NUM_13);
+EspEasyServoEx servo(LEDC_CHANNEL_0, GPIO_NUM_13);
 
 
 
@@ -192,7 +192,7 @@ struct Descriptions {
 void setup() {
   // let's get serial
   Serial.begin(115200);
-  while (!Serial) delay(10);
+  delay(500);
 
   // let's get led matrix
   animation.begin();
@@ -213,7 +213,7 @@ void setup() {
   }
 
   //servo closer to paper
-    servo.setServo(45);
+  servo.setTarget(45, 69);
 }
 
 void printYingYang(int yarr) {
@@ -678,9 +678,9 @@ if (handDetectedRight && handDetectedLeft) {
     
 
     //cutcutcut
-    servo.setServo(140);
+    servo.setTarget(145, 69);
     delay(1000);
     //return cutter
-    servo.setServo(45);
+    servo.setTarget(45, 42);
   }
 }
