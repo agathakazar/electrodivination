@@ -24,7 +24,7 @@ const int left2 = 33;
 const int right1 = 12;
 const int right2 = 14;
 const float handThreshold = 20.0;
-const int debounceCount = 3;
+const int debounceCount = 5;
 const int debounceDelay = 50;
 
 capasensor capleft(left1, left2, 1.5);
@@ -521,22 +521,32 @@ void loop() {
 
   int tossItera = 0;
 
-  
-  if (capright.isHandDetected(handThreshold)){
+  if (capright.isHandDetected(handThreshold)) {
     detectionCounterRight++;
     if (detectionCounterRight >= debounceCount) {
-      handDetectedRight = true;
-      animation.showRightArrow();
+        handDetectedRight = true;
     }
-  } if (capleft.isHandDetected(handThreshold)){
+} else {
+    detectionCounterRight = 0; // Reset counter if right hand not detected
+    handDetectedRight = false; // Reset detection state
+}
+
+if (capleft.isHandDetected(handThreshold)) {
     detectionCounterLeft++;
     if (detectionCounterLeft >= debounceCount) {
-      handDetectedLeft = true;
-      animation.showLeftArrow(); }
-  } if (handDetectedRight && handDetectedLeft){
-    animation.showTwoArrows();
+        handDetectedLeft = true;
+    }
+} else {
+    detectionCounterLeft = 0; // Reset counter if left hand not detected
+    handDetectedLeft = false; // Reset detection state
+}
+
+if (handDetectedRight && handDetectedLeft) {
+    //animation.showTwoArrows();
+    //delay(500);
     handDetected = true;
-    if (esc.connect()){
+      if (esc.connect()){
+        animation.updateProcessingAnimation(100);
       lastButtonPressTime = millis();
       while (tossItera < 6) {
         randResult = random(15);
@@ -555,12 +565,17 @@ void loop() {
         tossItera++;
       }
     }
-    else {
-      handDetected = false;
-    }
-  }
-   else 
-  animation.updateIdleAnimation(100);
+} else if (handDetectedRight) {
+    animation.showRightArrow();
+    handDetected = false;
+} else if (handDetectedLeft) {
+    animation.showLeftArrow();
+    handDetected = false;
+} else {
+    animation.updateIdleAnimation(100);
+    handDetected = false;
+}
+
 
   if (handDetected) {
     handDetected = false;

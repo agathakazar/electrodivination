@@ -32,7 +32,7 @@ public:
   
   void begin() {
     mx.begin();
-    mx.control(MD_MAX72XX::INTENSITY, 8);  // Set brightness (0-15)
+    mx.control(MD_MAX72XX::INTENSITY, 3);  // Set brightness (0-15)
     mx.clear();
     displayFrame(PROCESSING_IMAGES[0]);  // Display first processing frame on startup
   }
