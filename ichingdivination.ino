@@ -1,7 +1,7 @@
 #include "escprinterble.h" // https://github.com/rnrobles/esc-thermal-printer-ble
 #include "BLEDevice.h"
-
 #include "EspEasyServo.h" // https://github.com/tanakamasayuki/EspEasyUtils
+#include <EspCapaSens.h>
 
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
 #error Bluetooth is not enabled! or your board doesn't have one
@@ -9,14 +9,34 @@
 
 EscPos esc;
 
-const int buttonPin = 19;
-const int ledPin = 25;
+//led matrix stuff
+const uint8_t DATA_PIN = 19;  // DIN
+const uint8_t CS_PIN = 5;    // CS
+const uint8_t CLK_PIN = 18;   // CLK
+
+Max7219Animation animation(DATA_PIN, CLK_PIN, CS_PIN);
+
+//capasensor stuff
+const int left1 = 12;
+const int left2 = 14;
+const int right1 = 32;
+const int right2 = 33;
+const float handThreshold = 20.0;
+const int debounceCount = 3;
+const int debounceDelay = 50;
+
+capasensor capleft(left1, left2, 1.5);
+capasensor capright(right1, right2, 1.5);
+
+//other stuff
+
 int buttonState = LOW;
 int randResult = 999;
 int tossResult[] = { 0, 0, 0, 0, 0, 0 };
 
 // Servo initialize
 EspEasyServo servo(LEDC_CHANNEL_0, GPIO_NUM_13);
+
 
 
 // Define a struct to hold hexagrams
@@ -168,14 +188,17 @@ struct Descriptions {
 
 
 void setup() {
-  // initialize the pushbutton pin as an input:
-  pinMode(ledPin, OUTPUT);
-  pinMode(buttonPin, INPUT_PULLUP);
-
+  // let's get serial
   Serial.begin(115200);
+  while (!Serial) delay(10);
 
-  while (!Serial)
-    ;  // wait for serial port to connect.
+  // let's get led matrix
+  animation.begin();
+
+  capleft.begin();
+  Serial.println(capleft.getBaseline(), 1);
+  capright.begin();
+  Serial.println(capright.getBaseline(), 1);
 
   // You can change service, characteristic UUID for a compatible esc BLE printer
   char* service = "000018F0-0000-1000-8000-00805F9B34FB";
@@ -473,35 +496,58 @@ unsigned long lastButtonPressTime = 0;
 const unsigned long buttonPressDelay = 3000;  // Adjust the delay time in milliseconds (e.g., 3000 for 3 seconds)
 
 void loop() {
-  if (digitalRead(buttonPin) == LOW && !buttonPressed) {
-    buttonPressed = true;
-    lastButtonPressTime = millis();
-
-    digitalWrite(ledPin, HIGH);  // Turn on LED if button is pressed (connected to ground)
-
-    int tossItera = 0;
-
-    while (tossItera < 6) {
-      randResult = random(15);
-      Serial.println("Got random number " + String(randResult));
-
-      if (randResult == 0) {
-        randResult = 6;
-      } else if (1 <= randResult && randResult <= 3) {
-        randResult = 9;
-      } else if (4 <= randResult && randResult <= 8) {
-        randResult = 7;
-      } else if (9 <= randResult && randResult <= 15) {
-        randResult = 8;
-      }
-      tossResult[tossItera] = randResult;
-      tossItera++;
+  if (Serial.available()) {
+    String cmd = Serial.readStringUntil('\n');
+    cmd.trim();
+    if (cmd == "c") {
+      capleft.recalibrate();  // defaults: 10 samples, 2000 ms wait
+      capright.recalibrate();
+    } else if (cmd.startsWith("s")) {
+      float newSens = cmd.substring(1).toFloat();
+      capleft.setSensitivity(newSens);
+      capright.setSensitivity(newSens);
+      Serial.print("Sensitivity set to: ");
+      Serial.println(newSens);
     }
   }
 
-  if (buttonPressed && millis() - lastButtonPressTime >= buttonPressDelay) {
-    buttonPressed = false;
-    digitalWrite(ledPin, LOW);
+  static int detectionCounter = 0;
+  bool handDetected = false;
+
+   if (capleft.isHandDetected(handThreshold) && capright.isHandDetected(handThreshold) && esc.connect()) {
+    detectionCounter++;
+    if (detectionCounter >= debounceCount) {
+      handDetected = true;
+      lastButtonPressTime = millis();
+
+      // digitalWrite(ledPin, HIGH);  // Turn on LED if button is pressed (connected to ground)
+
+      int tossItera = 0;
+
+      while (tossItera < 6) {
+        randResult = random(15);
+        Serial.println("Got random number " + String(randResult));
+
+        if (randResult == 0) {
+          randResult = 6;
+        } else if (1 <= randResult && randResult <= 3) {
+          randResult = 9;
+        } else if (4 <= randResult && randResult <= 8) {
+          randResult = 7;
+        } else if (9 <= randResult && randResult <= 15) {
+          randResult = 8;
+        }
+        tossResult[tossItera] = randResult;
+        tossItera++;
+      }
+    }
+  } else {
+    detectionCounter = 0; //remove this later? 
+  }
+
+
+  if (handDetected) {
+    handDetected = false;
 
     int length = 6;  // Hardcoded length since the array always has 6 elements
 
