@@ -2,6 +2,7 @@
 #include "BLEDevice.h"
 #include "EspEasyServo.h" // https://github.com/tanakamasayuki/EspEasyUtils
 #include <EspCapaSens.h>
+#include "Max7219Animation.h"
 
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
 #error Bluetooth is not enabled! or your board doesn't have one
@@ -13,6 +14,7 @@ EscPos esc;
 const uint8_t DATA_PIN = 19;  // DIN
 const uint8_t CS_PIN = 5;    // CS
 const uint8_t CLK_PIN = 18;   // CLK
+const uint64_t CUSTOM_BITMAP = 0x5555aaaa5555aaaa;
 
 Max7219Animation animation(DATA_PIN, CLK_PIN, CS_PIN);
 
@@ -514,6 +516,10 @@ void loop() {
   static int detectionCounter = 0;
   bool handDetected = false;
 
+  
+
+  
+
    if (capleft.isHandDetected(handThreshold) && capright.isHandDetected(handThreshold) && esc.connect()) {
     detectionCounter++;
     if (detectionCounter >= debounceCount) {
@@ -644,7 +650,7 @@ void loop() {
     esc.feed(7);
 
     delay(3000);                // Wait for 3 seconds to debounce the button
-    digitalWrite(ledPin, LOW);  // Turn off LED
+    
 
     //cutcutcut
     servo.setServo(140);
