@@ -24,11 +24,11 @@ const int left2 = 32;
 const int right1 = 14;
 const int right2 = 12;
 const float handThreshold = 20.0;
-const int debounceCount = 3;
+const int debounceCount = 5;
 const int debounceDelay = 50;
 
-capasensor capleft(left1, left2, 1.5);
-capasensor capright(right1, right2, 1.5);
+capasensor capleft(left1, left2, 1.0);
+capasensor capright(right1, right2, 1.0);
 
 //other stuff
 
