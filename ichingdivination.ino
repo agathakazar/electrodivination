@@ -19,12 +19,12 @@ const uint64_t CUSTOM_BITMAP = 0x5555aaaa5555aaaa;
 Max7219Animation display(DATA_PIN, CLK_PIN, CS_PIN);
 
 //capasensor stuff
-const int left1 = 32;
-const int left2 = 33;
-const int right1 = 12;
-const int right2 = 14;
+const int left1 = 33;
+const int left2 = 32;
+const int right1 = 14;
+const int right2 = 12;
 const float handThreshold = 20.0;
-const int debounceCount = 5;
+const int debounceCount = 3;
 const int debounceDelay = 50;
 
 capasensor capleft(left1, left2, 1.5);
@@ -570,13 +570,10 @@ if (handDetectedRight && handDetectedLeft) {
     }
 } else if (handDetectedRight) {
     display.showRightArrow();
-    handDetected = false;
 } else if (handDetectedLeft) {
     display.showLeftArrow();
-    handDetected = false;
 } else {
     display.setMode(Max7219Animation::IDLE, 200);
-    handDetected = false;
 }
 
 
@@ -681,7 +678,7 @@ if (handDetectedRight && handDetectedLeft) {
     
 
     //cutcutcut
-    servo.setTarget(145, 69);
+    servo.setTarget(150, 100);
     delay(1000);
     //return cutter
     servo.setTarget(45, 42);

@@ -30,9 +30,7 @@ private:
   volatile Mode currentMode = PROCESSING;
   volatile int processingFrame = 0;
   volatile int idleFrame = 0;
-  volatile unsigned long processingLastTime = 0;
-  volatile unsigned long idleLastTime = 0;
-  volatile unsigned long processingStartTime = 0;
+  volatile TickType_t processingStartTick = 0;  // For precise auto-switch timing
   volatile uint64_t staticBitmap = 0;
   volatile int frameDelayMs = 150;  // Default; changeable via setFrameDelay()
 
@@ -41,42 +39,33 @@ private:
   // Static task function (must be static for FreeRTOS)
   static void animationTask(void* param) {
     Max7219Animation* self = static_cast<Max7219Animation*>(param);
-    TickType_t xLastWakeTime = xTaskGetTickCount();
-    const TickType_t xFrequency = pdMS_TO_TICKS(self->frameDelayMs);  // Delay in ticks
 
     while (true) {
-      unsigned long now = millis();  // Safe to call in task
       uint64_t frame = 0;
 
       switch (self->currentMode) {
         case PROCESSING:
-          if (now - self->processingLastTime >= self->frameDelayMs) {
-            self->processingFrame = (self->processingFrame + 1) % self->PROCESSING_IMAGES_LEN;
-            frame = self->PROCESSING_IMAGES[self->processingFrame];
-            self->processingLastTime = now;
-            // Optional auto-switch
-            if (now - self->processingStartTime > 5000) {
-              self->setModeInternal(IDLE);
-            }
+          self->processingFrame = (self->processingFrame + 1) % self->PROCESSING_IMAGES_LEN;
+          frame = self->PROCESSING_IMAGES[self->processingFrame];
+          // Optional auto-switch after ~5 seconds (precise with ticks)
+          if (xTaskGetTickCount() - self->processingStartTick > pdMS_TO_TICKS(5000)) {
+            self->setModeInternal(IDLE);
           }
           break;
         case IDLE:
-          if (now - self->idleLastTime >= self->frameDelayMs) {
-            self->idleFrame = (self->idleFrame + 1) % self->IDLE_IMAGES_LEN;
-            frame = self->IDLE_IMAGES[self->idleFrame];
-            self->idleLastTime = now;
-          }
+          self->idleFrame = (self->idleFrame + 1) % self->IDLE_IMAGES_LEN;
+          frame = self->IDLE_IMAGES[self->idleFrame];
           break;
         case STATIC:
           frame = self->staticBitmap;
           break;
       }
 
-      if (frame != 0) {  // Only update if frame changed (reduces flicker)
+      if (frame != 0) {
         self->displayFrame(frame);
       }
 
-      vTaskDelayUntil(&xLastWakeTime, xFrequency);  // Precise delay, yields CPU
+      vTaskDelay(pdMS_TO_TICKS(self->frameDelayMs));  // Simple, fixed delay—yields CPU
     }
   }
 
@@ -91,7 +80,13 @@ public:
     currentMode = startMode;
     frameDelayMs = initialDelayMs;
     resetAnimation();
-    displayFrame(PROCESSING_IMAGES[0]);  // Initial frame
+    uint64_t initialFrame = 0;
+    switch (startMode) {
+      case PROCESSING: initialFrame = PROCESSING_IMAGES[0]; break;
+      case IDLE: initialFrame = IDLE_IMAGES[0]; break;
+      default: initialFrame = 0;
+    }
+    displayFrame(initialFrame);  // Initial frame
   }
 
   // Start the background task (call once in setup())
@@ -104,7 +99,7 @@ public:
         this,                    // Parameter
         ANIMATION_TASK_PRIORITY, // Priority
         &animationTaskHandle,    // Handle
-        1                        // Pin to core 1 (leave core 0 for main loop/WiFi)
+        0                        // Pin to core 0 (APP core)
       );
     }
   }
@@ -148,9 +143,7 @@ private:
   void resetAnimation() {
     processingFrame = 0;
     idleFrame = 0;
-    processingLastTime = millis();
-    idleLastTime = millis();
-    processingStartTime = millis();
+    processingStartTick = xTaskGetTickCount();  // Reset tick timer
   }
 
   uint64_t getFirstFrame() const {
